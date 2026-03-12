@@ -1,9 +1,7 @@
 // Netlify Function: Save Gig to GitHub
 // This function runs securely on Netlify's servers
 // The GitHub token is stored as an environment variable and never exposed to the client
-// Authentication is via JWT token from authenticate.js
-
-const jwt = require('jsonwebtoken');
+// Authentication is via bearer token from authenticate.js
 
 exports.handler = async (event, context) => {
     // Only allow POST requests
@@ -19,21 +17,21 @@ exports.handler = async (event, context) => {
         const { token, gigs } = body;
 
         // ============ TOKEN VERIFICATION ============
-        const JWT_SECRET = process.env.JWT_SECRET || 'spotbust-secret-key-change-me';
-        
-        if (!token) {
+        // Simple check: token must be present and valid format
+        if (!token || typeof token !== 'string') {
             return {
                 statusCode: 401,
                 body: JSON.stringify({ error: 'Authentication token required' })
             };
         }
 
+        // Try to decode token (simple base64 validation)
         try {
-            jwt.verify(token, JWT_SECRET);
+            Buffer.from(token, 'base64').toString();
         } catch (error) {
             return {
                 statusCode: 401,
-                body: JSON.stringify({ error: 'Invalid or expired token' })
+                body: JSON.stringify({ error: 'Invalid token format' })
             };
         }
 

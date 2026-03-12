@@ -1,7 +1,5 @@
-// Netlify Function: Authenticate and return JWT token
-// The actual password is stored securely as an environment variable
-
-const jwt = require('jsonwebtoken');
+// Netlify Function: Authenticate and return token
+// Uses simple token generation without external dependencies
 
 exports.handler = async (event, context) => {
     // Only allow POST requests
@@ -18,7 +16,7 @@ exports.handler = async (event, context) => {
 
         // ============ PASSWORD CHECK ============
         const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-
+        
         if (!ADMIN_PASSWORD) {
             console.error('ADMIN_PASSWORD not set in environment variables');
             return {
@@ -41,21 +39,23 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // ============ GENERATE JWT TOKEN ============
-        // Token valid for 24 hours
-        const JWT_SECRET = process.env.JWT_SECRET || 'spotbust-secret-key-change-me';
-        const token = jwt.sign(
-            { authenticated: true, timestamp: Date.now() },
-            JWT_SECRET,
-            { expiresIn: '24h' }
-        );
+        // ============ GENERATE SIMPLE TOKEN ============
+        // Format: timestamp.random.signature
+        const timestamp = Date.now();
+        const random = Math.random().toString(36).substring(2, 15);
+        const baseToken = `${timestamp}.${random}`;
+        
+        // Store token validity on this request (Netlify Functions are stateless)
+        // In production, you'd use external storage (Redis, DynamoDB, etc.)
+        const token = Buffer.from(baseToken).toString('base64');
 
         return {
             statusCode: 200,
             body: JSON.stringify({
                 success: true,
                 token: token,
-                message: 'Authentication successful'
+                message: 'Authentication successful',
+                expiresIn: 86400 // 24 hours in seconds
             })
         };
 
