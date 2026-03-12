@@ -194,7 +194,7 @@ function initFlyingFinger(finger) {
 
     // Animation during hero: move down to 50vh (stays centered horizontally)
     gsap.to(finger, {
-        top: 'calc(50vh - 2rem)',
+        top: 'calc(90vh - 2rem)',
         width: '120px',
         ease: 'power2.out',
         scrollTrigger: {
@@ -219,7 +219,7 @@ function initFlyingFinger(finger) {
         }
     });
 
-    // Animation during gigs: move to left side (stays at 50vh vertically)
+    /*/ Animation during gigs: move to left side (stays at 50vh vertically)
     gsap.to(finger, {
         left: '2rem',
         ease: 'power2.out',
@@ -230,6 +230,6 @@ function initFlyingFinger(finger) {
             scrub: true,
         }
     });
-
+/*/
 
 }
