@@ -199,7 +199,7 @@ function initFlyingFinger(finger) {
         ease: 'power2.out',
         scrollTrigger: {
             trigger: '#hero',
-            start: 'top top',
+            start: 'center top',
             end: 'bottom top',
             scrub: true,
         }
