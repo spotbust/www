@@ -692,16 +692,17 @@
     <script>
         // ============ CONFIG ============
         const CONFIG = {
-            ADMIN_PASSWORD: 'spotbust123', // Must match Netlify env var
             GIGS_JSON_URL: '/gigs.json',
+            AUTHENTICATE_ENDPOINT: '/.netlify/functions/authenticate',
             SAVE_GIG_ENDPOINT: '/.netlify/functions/save-gig',
-            STORAGE_AUTH_KEY: 'spotbust_authenticated'
+            STORAGE_AUTH_KEY: 'spotbust_authenticated',
+            STORAGE_TOKEN_KEY: 'spotbust_auth_token'
         };
 
         // ============ STATE ============
         let state = {
             authenticated: false,
-            password: null,
+            authToken: null,
             gigs: [],
             editingGigIndex: null,
             deletingGigIndex: null
@@ -768,34 +769,66 @@
             e.preventDefault();
             const password = passwordInput.value;
 
-            if (password !== CONFIG.ADMIN_PASSWORD) {
-                showLoginError('Falsches Passwort');
+            if (!password) {
+                showLoginError('Passwort erforderlich');
                 return;
             }
 
-            state.authenticated = true;
-            state.password = password;
-            localStorage.setItem(CONFIG.STORAGE_AUTH_KEY, 'true');
+            authenticateUser(password);
+        }
 
-            loginError.classList.remove('show');
-            showAdminScreen();
-            loadGigs();
+        async function authenticateUser(password) {
+            try {
+                showLoginError('');
+                
+                const response = await fetch(CONFIG.AUTHENTICATE_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showLoginError(data.error || 'Authentifizierung fehlgeschlagen');
+                    return;
+                }
+
+                // Store token
+                state.authenticated = true;
+                state.authToken = data.token;
+                localStorage.setItem(CONFIG.STORAGE_AUTH_KEY, 'true');
+                localStorage.setItem(CONFIG.STORAGE_TOKEN_KEY, data.token);
+
+                passwordInput.value = '';
+                showAdminScreen();
+                loadGigs();
+            } catch (error) {
+                console.error('Auth error:', error);
+                showLoginError('Verbindungsfehler: ' + error.message);
+            }
         }
 
         function handleLogout() {
             state.authenticated = false;
-            state.password = null;
+            state.authToken = null;
             state.gigs = [];
             localStorage.removeItem(CONFIG.STORAGE_AUTH_KEY);
+            localStorage.removeItem(CONFIG.STORAGE_TOKEN_KEY);
 
             passwordInput.value = '';
+            showLoginScreen();
         }
 
         function restoreAuth() {
             const authenticated = localStorage.getItem(CONFIG.STORAGE_AUTH_KEY);
+            const token = localStorage.getItem(CONFIG.STORAGE_TOKEN_KEY);
 
-            if (authenticated) {
+            if (authenticated && token) {
                 state.authenticated = true;
+                state.authToken = token;
             }
         }
 
@@ -981,14 +1014,14 @@
                 // Sort gigs by date before sending
                 const sortedGigs = state.gigs.sort((a, b) => new Date(a.datum) - new Date(b.datum));
 
-                // Send to Netlify function
+                // Send to Netlify function with token
                 const response = await fetch(CONFIG.SAVE_GIG_ENDPOINT, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        password: state.password,
+                        token: state.authToken,
                         gigs: sortedGigs
                     })
                 });
