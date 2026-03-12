@@ -181,7 +181,7 @@ function initFlyingFinger(finger) {
         left: 'calc(50vw - 2rem)',
         top: '2.5rem',
         width: '60px',
-        opacity: 1,
+        opacity: 0,
         rotation: 0,
         scale: 2,
     });
@@ -194,6 +194,7 @@ function initFlyingFinger(finger) {
 
     // Animation during hero: move down to 50vh (stays centered horizontally)
     gsap.to(finger, {
+        opacity: 1,
         top: 'calc(90vh - 2rem)',
         width: '120px',
         ease: 'power2.out',

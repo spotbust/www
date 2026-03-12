@@ -16,7 +16,7 @@ exports.handler = async (event, context) => {
 
         // ============ PASSWORD CHECK ============
         const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-        
+
         if (!ADMIN_PASSWORD) {
             console.error('ADMIN_PASSWORD not set in environment variables');
             return {
@@ -44,7 +44,7 @@ exports.handler = async (event, context) => {
         const timestamp = Date.now();
         const random = Math.random().toString(36).substring(2, 15);
         const baseToken = `${timestamp}.${random}`;
-        
+
         // Store token validity on this request (Netlify Functions are stateless)
         // In production, you'd use external storage (Redis, DynamoDB, etc.)
         const token = Buffer.from(baseToken).toString('base64');

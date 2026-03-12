@@ -780,7 +780,7 @@
         async function authenticateUser(password) {
             try {
                 showLoginError('');
-                
+
                 const response = await fetch(CONFIG.AUTHENTICATE_ENDPOINT, {
                     method: 'POST',
                     headers: {
