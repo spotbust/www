@@ -18,16 +18,37 @@
     <!-- ====== NAV ====== -->
     <nav id="nav">
         <a href="#hero" class="nav-logo">SPOTBUST</a>
-        <div class="nav-links">
-            <a href="#gigs">GIGS</a>
-            <a href="#media">MEDIA</a>
-            <a href="#kontakt">KONTAKT</a>
-        </div>
-        <button class="burger" aria-label="Menü" id="burger">&#9776;</button>
+        <div class="nav-links"></div>
     </nav>
 
-    <!-- ====== FLYING FINGER (follows scroll) ====== -->
-    <img id="flying-finger" src="data/Spotbust_Finger_Soean/Ebene 1 Kopie.png" alt="">
+    <!-- ====== FLYING FINGER (Menu Trigger) ====== -->
+    <img id="flying-finger" src="data/Spotbust_Finger_Soean/spotbust_flyingfinger.png" alt="">
+    <div id="finger-text" class="finger-text">spotbust - wir machen "musik"</div>
+
+    <!-- ====== MENU OVERLAY (Spotify + Nav) ====== -->
+    <div id="menu-overlay" class="menu-overlay">
+        <div class="menu-overlay-content">
+            <!-- Close Button -->
+            <button id="overlay-close" class="overlay-close" aria-label="Menü schließen">✕</button>
+
+            <!-- Nav Links -->
+            <nav class="overlay-nav">
+                <a href="#gigs">GIGS</a>
+                <a href="#media">MEDIA</a>
+                <a href="#kontakt">KONTAKT</a>
+            </nav>
+
+            <!-- Spotify Player -->
+            <div class="overlay-spotify">
+                <h3>SPOTIFY</h3>
+                <iframe style="border-radius:12px"
+                    src="https://open.spotify.com/embed/artist/3ygXpXJhEJkPZT6cOWe0ZM?utm_source=generator" width="100%"
+                    height="380" frameBorder="0" allowfullscreen=""
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"></iframe>
+            </div>
+        </div>
+    </div>
 
     <!-- ====== HERO ====== -->
     <section id="hero">
@@ -140,9 +161,10 @@
         <p>&copy; SPOTBUST <span id="year"></span> &mdash; Leipzig</p>
     </footer>
 
-    <!-- GSAP + ScrollTrigger + MotionPath -->
+    <!-- GSAP + ScrollTrigger + MotionPath + ScrollTo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
 
     <script src="js/main.js"></script>

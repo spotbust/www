@@ -27,6 +27,8 @@ html {
 }
 
 body {
+    margin: 10vw;
+    ;
     background: var(--black);
     color: var(--white);
     font-family: var(--font-mono);
@@ -57,66 +59,21 @@ img {
 
 /* ---------- NAV ---------- */
 #nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
+    position: static;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0.8rem 2rem;
     background: rgba(10, 10, 10, 0.92);
     backdrop-filter: blur(4px);
-    border-bottom: 2px solid var(--neon);
 }
 
 .nav-logo {
-    font-family: var(--font-marker);
-    font-size: 1.6rem;
-    color: var(--neon) !important;
-    letter-spacing: 2px;
+    display: none;
 }
 
 .nav-links {
-    display: flex;
-    gap: 2rem;
-}
-
-.nav-links a {
-    font-size: 0.85rem;
-    letter-spacing: 3px;
-    color: var(--white);
-    text-transform: uppercase;
-    position: relative;
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -4px;
-    width: 0;
-    height: 2px;
-    background: var(--neon);
-    transition: width 0.3s;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
-.nav-links a:hover {
-    color: var(--neon);
-}
-
-.burger {
     display: none;
-    background: none;
-    border: none;
-    color: var(--neon);
-    font-size: 1.8rem;
-    cursor: pointer;
 }
 
 /* ---------- HERO (with band photo) ---------- */
@@ -179,20 +136,157 @@ img {
     opacity: 0.7;
 }
 
-/* ---------- FLYING FINGER ---------- */
+/* ---------- FLYING FINGER (Header Logo / Menu Trigger) ---------- */
 #flying-finger {
     position: fixed;
-    z-index: 900;
-    pointer-events: none;
-    width: 50vw;
-    max-width: 400px;
+    z-index: 1003;
+    pointer-events: auto;
+    cursor: pointer;
+    width: 4rem;
+    max-width: 4rem;
     height: auto;
     filter: drop-shadow(0 0 30px rgba(198, 255, 0, 0.35));
     will-change: transform, opacity, width;
-    /* starts centered in hero — GSAP takes over */
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    /* Header logo position */
+    left: 2rem;
+    top: 0.6rem;
+    transform: none;
+    transition: filter 0.2s;
+}
+
+#flying-finger:hover {
+    filter: drop-shadow(0 0 40px rgba(198, 255, 0, 0.6));
+}
+
+#flying-finger.pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 30px rgba(198, 255, 0, 0.35));
+        transform: scale(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 50px rgba(198, 255, 0, 0.7));
+        transform: scale(1.05);
+    }
+}
+
+/* ---------- FINGER TEXT ---------- */
+.finger-text {
+    position: fixed;
+    z-index: 1004;
+    pointer-events: none;
+    font-family: var(--font-marker);
+    font-size: 1rem;
+    color: var(--neon);
+    text-transform: lowercase;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    text-align: center;
+    width: 100vw;
+    left: 0rem;
+    opacity: 0.6;
+    will-change: transform, scale, opacity;
+    text-align: center;
+}
+
+/* ---------- MENU OVERLAY ---------- */
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.menu-overlay-content {
+    position: relative;
+    width: 40vw;
+    max-width: 40vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    padding: 2rem;
+}
+
+.overlay-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--neon);
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.overlay-close:hover {
+    color: var(--red);
+}
+
+.overlay-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.overlay-nav a {
+    font-family: var(--font-marker);
+    font-size: 1.8rem;
+    color: var(--neon);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transition: color 0.2s;
+}
+
+.overlay-nav a:hover {
+    color: var(--red);
+}
+
+.overlay-spotify {
+    width: 100%;
+    text-align: center;
+}
+
+.overlay-spotify h3 {
+    font-family: var(--font-marker);
+    font-size: 1.5rem;
+    color: var(--neon);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.overlay-spotify iframe {
+    width: 100% !important;
+    max-width: 380px !important;
 }
 
 /* ---------- BUTTON ---------- */
@@ -535,27 +629,6 @@ footer {
 
 /* ---------- MOBILE ---------- */
 @media (max-width: 700px) {
-    .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        flex-direction: column;
-        background: var(--black);
-        border-bottom: 2px solid var(--neon);
-        padding: 1rem 2rem;
-        gap: 1rem;
-    }
-
-    .nav-links.open {
-        display: flex;
-    }
-
-    .burger {
-        display: block;
-    }
-
     .gig-item {
         grid-template-columns: 1fr;
         gap: 0.3rem;

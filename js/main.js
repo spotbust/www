@@ -9,16 +9,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // ---- Mobile Burger Menu ----
-    const burger = document.getElementById('burger');
-    const navLinks = document.querySelector('.nav-links');
-    if (burger && navLinks) {
-        burger.addEventListener('click', () => {
-            navLinks.classList.toggle('open');
+    // ---- Menu Overlay (triggered by Flying Finger) ----
+    const finger = document.getElementById('flying-finger');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const overlayClose = document.getElementById('overlay-close');
+    const overlayNav = document.querySelectorAll('.overlay-nav a');
+    const overlayContent = document.querySelector('.menu-overlay-content');
+
+    if (finger && menuOverlay) {
+        // Open overlay
+        finger.addEventListener('click', () => {
+            // Reset overlay content position first
+            gsap.set(overlayContent, { y: -500, opacity: 0 });
+
+            menuOverlay.classList.add('active');
+            finger.classList.add('pulse');
+            document.body.style.overflow = 'hidden';
+
+            // Animate content in from top
+            gsap.to(overlayContent, {
+                y: 0,
+                opacity: 1,
+                duration: 0.6,
+                ease: 'power2.out'
+            });
         });
-        // Schließen bei Klick auf Link
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => navLinks.classList.remove('open'));
+
+        // Close overlay
+        overlayClose.addEventListener('click', () => {
+            finger.classList.remove('pulse');
+            menuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close when clicking overlay background
+        menuOverlay.addEventListener('click', (e) => {
+            if (e.target === menuOverlay) {
+                finger.classList.remove('pulse');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close with animation when clicking nav link
+        overlayNav.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+
+                // Exit animation für overlay (scrolls down)
+                gsap.to(overlayContent, {
+                    y: 500,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: 'power2.in'
+                });
+
+                // Smooth scroll zum target
+                setTimeout(() => {
+                    gsap.to(window, {
+                        scrollTo: {
+                            y: targetId,
+                            autoKill: false
+                        },
+                        duration: 0.8,
+                        ease: 'power2.inOut'
+                    });
+                }, 200);
+
+                // Overlay schließen
+                setTimeout(() => {
+                    finger.classList.remove('pulse');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }, 300);
+            });
         });
     }
 

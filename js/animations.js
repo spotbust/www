@@ -5,13 +5,14 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, ScrollToPlugin);
 
     // ---- HERO PARALLAX BACKGROUND ----
     const heroBg = document.querySelector('.hero-bg');
     const heroSub = document.querySelector('.hero-sub');
 
     if (heroBg) {
+        // Parallax movement (scroll-triggered)
         gsap.to(heroBg, {
             yPercent: 25,
             ease: 'none',
@@ -22,6 +23,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 scrub: true,
             }
         });
+
+        // Continuous flickering effect - independent of scroll
+        const flickerTl = gsap.timeline({ repeat: -1 });
+
+        flickerTl.to(heroBg, {
+            filter: 'grayscale(45%) contrast(1.15) brightness(0.25)',
+            duration: 0.2,
+        })
+            .to(heroBg, {
+                filter: 'grayscale(40%) contrast(1.2) brightness(0.35)',
+                duration: 0.1,
+            })
+            .to(heroBg, {
+                filter: 'grayscale(50%) contrast(1.3) brightness(0.2)',
+                duration: 0.18,
+            })
+            .to(heroBg, {
+                filter: 'grayscale(38%) contrast(1.1) brightness(0.4)',
+                duration: 0.22,
+            })
+            .to(heroBg, {
+                filter: 'grayscale(42%) contrast(1.25) brightness(0.3)',
+                duration: 0.29,
+            }, '-=0.38');
     }
 
     // Subline faded weg
@@ -143,107 +168,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* =============================================
-   FLYING FINGER — flies between sections
+   FLYING FINGER — simple scroll animation
+   Starts as header logo, animates to 50vh on scroll
    ============================================= */
 
 function initFlyingFinger(finger) {
 
-    // Set initial state: centered in viewport, 50vw
+    const fingerText = document.getElementById('finger-text');
+
+    // Initial state: positioned in center horizontally, top of page
     gsap.set(finger, {
-        left: '50%',
-        top: '50%',
-        xPercent: -50,
-        yPercent: -50,
-        width: '50vw',
-        maxWidth: '400px',
+        left: 'calc(50vw - 2rem)',
+        top: '2.5rem',
+        width: '60px',
         opacity: 1,
         rotation: 0,
-        scale: 1,
+        scale: 2,
     });
 
-    // ============ MASTER TIMELINE — scroll-coupled ============
-    const masterTl = gsap.timeline({
+    gsap.set(fingerText, {
+        top: '1rem',
+        scale: 1,
+        opacity: 1,
+    });
+
+    // Animation during hero: move down to 50vh (stays centered horizontally)
+    gsap.to(finger, {
+        top: 'calc(50vh - 2rem)',
+        width: '120px',
+        ease: 'power2.out',
         scrollTrigger: {
             trigger: '#hero',
             start: 'top top',
             end: 'bottom top',
-            endTrigger: 'footer',
-            scrub: 1.2,
+            scrub: true,
         }
     });
 
-    // Phase 1: Shrink from hero-size, drift slightly right
-    masterTl.to(finger, {
-        width: '70px',
-        maxWidth: 'none',
-        left: '60%',
-        top: '40%',
-        rotation: -8,
-        ease: 'power2.inOut',
-        duration: 3,
-    })
-
-    // Phase 2: Gentle drift right while passing gigs
-    .to(finger, {
-        left: '65%',
-        top: '38%',
-        rotation: 5,
-        duration: 2,
-        ease: 'power1.inOut',
-    })
-
-    // Subtle move toward left-center (media section)
-    .to(finger, {
-        left: '38%',
-        top: '50%',
-        rotation: -10,
-        duration: 3,
-        ease: 'power1.inOut',
-    })
-
-    // Small lazy rotation
-    .to(finger, {
-        rotation: 350,
-        duration: 1.5,
-        ease: 'power1.inOut',
-    })
-
-    // Phase 3: Settle back to center (kontakt)
-    .to(finger, {
-        left: '50%',
-        top: '50%',
-        rotation: 0,
-        width: '90px',
-        scale: 1.1,
-        duration: 3,
-        ease: 'power2.inOut',
-    })
-
-    // Point at email
-    .to(finger, {
-        rotation: -20,
-        scale: 1.2,
-        duration: 1,
-        ease: 'power2.inOut',
-    })
-
-    // Fade out gently
-    .to(finger, {
-        left: '55%',
-        top: '40%',
-        rotation: 10,
+    // Text grows and becomes transparent during hero
+    gsap.to(fingerText, {
+        top: 'calc(50vh + 80px)',
+        scale: 2,
         opacity: 0,
-        scale: 0.7,
-        duration: 2,
-        ease: 'power2.in',
+        ease: 'power2.out',
+        scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+        }
     });
 
-    // Resize handler
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            ScrollTrigger.refresh();
-        }, 250);
+    // Animation during gigs: move to left side (stays at 50vh vertically)
+    gsap.to(finger, {
+        left: '2rem',
+        ease: 'power2.out',
+        scrollTrigger: {
+            trigger: '#hero',
+            start: 'center top',
+            end: 'bottom top',
+            scrub: true,
+        }
     });
+
+
 }
