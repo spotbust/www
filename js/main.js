@@ -87,6 +87,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---- Handle all anchor links (including buttons) ----
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        // Skip if already handled by overlay nav
+        const overlayNav = document.querySelectorAll('.nav-link');
+        if (overlayNav.forEach && Array.from(overlayNav).includes(link)) return;
+
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            const target = document.querySelector(targetId);
+            
+            if (target) {
+                gsap.to(window, {
+                    scrollTo: {
+                        y: target,
+                        autoKill: false
+                    },
+                    duration: 0.8,
+                    ease: 'power2.inOut'
+                });
+            }
+        });
+    });
+
     // ---- Gigs laden ----
     loadGigs();
 });

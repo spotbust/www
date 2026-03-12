@@ -659,11 +659,30 @@ footer {
     .parallax-divider {
         height: 20vh;
     }
+
+    /* Overlay auf volle Breite */
+    .menu-overlay-content {
+        width: 90vw;
+        max-width: 90vw;
+    }
+
+    /* Button verkleinern */
+    .btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 420px) {
     .media-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Button noch kleiner auf sehr kleinen Screens */
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
     }
 }
 

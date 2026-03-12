@@ -210,7 +210,7 @@ function initFlyingFinger(finger) {
     gsap.to(fingerText, {
         top: 'calc(50vh + 80px)',
         scale: 2,
-        opacity: 0,
+        opacity: -1,
         ease: 'power2.out',
         scrollTrigger: {
             trigger: '#hero',
